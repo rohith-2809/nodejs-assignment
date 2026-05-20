@@ -1,0 +1,347 @@
+{
+  "info": {
+    "name": "School Management API",
+    "description": "API collection for Node.js School Management Assignment",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Add School",
+      "item": [
+        {
+          "name": "Add School - Success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Springfield Elementary\",\n  \"address\": \"123 Main St, Springfield\",\n  \"latitude\": 18.5204,\n  \"longitude\": 73.8567\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/addSchool",
+              "host": ["{{base_url}}"],
+              "path": ["addSchool"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Response has schoolId', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property('schoolId');",
+                  "  pm.expect(json.message).to.equal('School added successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"School added successfully\",\n  \"schoolId\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add School - Missing Name",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"address\": \"123 Main St\",\n  \"latitude\": 18.5204,\n  \"longitude\": 73.8567\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/addSchool",
+              "host": ["{{base_url}}"],
+              "path": ["addSchool"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Error message present', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property('error');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 Bad Request - Empty Name",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"name is required and must be a non-empty string\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add School - Invalid Latitude",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test School\",\n  \"address\": \"123 Main St\",\n  \"latitude\": 999,\n  \"longitude\": 73.8567\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/addSchool",
+              "host": ["{{base_url}}"],
+              "path": ["addSchool"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Latitude error message', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.error).to.include('latitude');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 Bad Request - Invalid Latitude",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"latitude must be a number between -90 and 90\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add School - Missing Address",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test School\",\n  \"address\": \"\",\n  \"latitude\": 18.5204,\n  \"longitude\": 73.8567\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/addSchool",
+              "host": ["{{base_url}}"],
+              "path": ["addSchool"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Address error message', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.error).to.include('address');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 Bad Request - Empty Address",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"address is required and must be a non-empty string\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "List Schools",
+      "item": [
+        {
+          "name": "List Schools - Success",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/listSchools?latitude=18.5204&longitude=73.8567",
+              "host": ["{{base_url}}"],
+              "path": ["listSchools"],
+              "query": [
+                { "key": "latitude", "value": "18.5204" },
+                { "key": "longitude", "value": "73.8567" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns schools array sorted by distance', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property('schools');",
+                  "  pm.expect(json.schools).to.be.an('array');",
+                  "  for (let i = 1; i < json.schools.length; i++) {",
+                  "    pm.expect(json.schools[i].distance).to.be.at.least(json.schools[i-1].distance);",
+                  "  }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 OK - Sorted by distance",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"schools\": [\n    {\n      \"id\": 1,\n      \"name\": \"Springfield Elementary\",\n      \"address\": \"123 Main St, Springfield\",\n      \"latitude\": 18.5204,\n      \"longitude\": 73.8567,\n      \"distance\": 0.0003\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Greenwood High\",\n      \"address\": \"456 Oak Ave, Pune\",\n      \"latitude\": 18.5314,\n      \"longitude\": 73.8446,\n      \"distance\": 1.77\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Schools - Missing Latitude",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/listSchools?longitude=73.8567",
+              "host": ["{{base_url}}"],
+              "path": ["listSchools"],
+              "query": [
+                { "key": "longitude", "value": "73.8567" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Latitude error', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.error).to.include('latitude');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 Bad Request - Missing Latitude",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"Query param 'latitude' must be a number between -90 and 90\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Schools - Invalid Longitude",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/listSchools?latitude=18.5204&longitude=999",
+              "host": ["{{base_url}}"],
+              "path": ["listSchools"],
+              "query": [
+                { "key": "latitude", "value": "18.5204" },
+                { "key": "longitude", "value": "999" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Longitude error', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.error).to.include('longitude');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 Bad Request - Invalid Longitude",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"Query param 'longitude' must be a number between -180 and 180\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

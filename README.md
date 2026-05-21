@@ -32,6 +32,12 @@ To sort schools by proximity, the application utilizes the Haversine formula wit
 Input validation is handled via custom middleware before requests reach the core business logic. 
 * **Reasoning:** This ensures that the application fails fast when provided with malformed data, returning a `400 Bad Request` immediately. It protects the database from invalid entries and keeps the controller logic clean and focused solely on processing valid data.
 
+## Hosting & Deployment
+
+The application is hosted on **Render**. 
+
+> **Note:** As we are utilizing free tier instances for both the web service and the database, they are configured by the provider to spin down (go to sleep) after a period of inactivity (usually 15 minutes). To circumvent this and ensure the API remains responsive, we have implemented an automated keep-alive mechanism. The server periodically pings its own `/keep-alive` endpoint every 10 minutes, which in turn queries the database, keeping both the Render instance and the database active.
+
 ## API Endpoints
 
 ### 1. Add School
